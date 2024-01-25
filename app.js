@@ -1,10 +1,13 @@
 const express = require('express');
 const axios = require('axios');
+const path = require('path');
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
+
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
     res.write('<form action="/weather" method="get">');
@@ -13,7 +16,6 @@ app.get('/', function (req, res) {
     res.write('<button type="submit">Get Weather</button>');
     res.write('</form>');
 
-    // Add a link to the map page
     res.write('<a href="/map">View Map</a>');
 
     res.send();
@@ -24,11 +26,11 @@ app.get('/weather', function(req, res) {
     const apiKey = 'bcec02221e31ff3db4a5505b4ad92298';
     const openWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
+    //OpenWeather API
     axios.get(openWeatherUrl)
         .then(response => {
             const weatherdata = response.data;
 
-            // Extract the necessary weather information
             const temp = weatherdata.main.temp;
             const description = weatherdata.weather[0].description;
             const feelsLike = weatherdata.main.feels_like;
@@ -43,12 +45,13 @@ app.get('/weather', function(req, res) {
 
             const sunriseSunsetUrl = `https://api.sunrise-sunset.org/json?lat=${coordinates.lat}&lng=${coordinates.lon}&formatted=0`;
 
+            //Sunrise-Sunset API
             axios.get(sunriseSunsetUrl)
                 .then(sunriseSunsetResponse => {
                     const sunrise = new Date(sunriseSunsetResponse.data.results.sunrise);
                     const sunset = new Date(sunriseSunsetResponse.data.results.sunset);
 
-                    
+                    //USGS Earthquake API
                     const usgsEarthquakeUrl = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson`;
                     axios.get(usgsEarthquakeUrl)
                         .then(response => {
@@ -67,7 +70,8 @@ app.get('/weather', function(req, res) {
                                 const currentDate = new Date();
                                 daysSinceLastEarthquake = Math.floor((currentDate - mostRecentEarthquake) / (1000 * 60 * 60 * 24));
                             }
-                    
+                            
+                            //send response
                             res.write(`<p>Temperature in ${city} is ${temp} degrees Celsius.</p>`);
                             res.write(`<p>The weather is currently ${description}.</p>`);
                             res.write(`<p>It feels like ${feelsLike} degrees Celsius.</p>`);
@@ -81,17 +85,17 @@ app.get('/weather', function(req, res) {
 
                             res.write(`<a href="/map?lat=${coordinates.lat}&lon=${coordinates.lon}">View Map</a>`);
 
-                            res.write(`<p>Sunrise: ${sunrise.toLocaleTimeString()}</p>`);
-                            res.write(`<p>Sunset: ${sunset.toLocaleTimeString()}</p>`);
-
                             if (daysSinceLastEarthquake > 0) {
                                 res.write(`<p>The last earthquake near ${city} with magnitude over 3 occurred ${daysSinceLastEarthquake} days ago.</p>`);
                             } else {
                                 res.write(`<p>No earthquakes with magnitude over 3 ${city} in a very long time!</p>`);
                             }
 
+                            res.write(`<p>Sunrise: ${sunrise.toLocaleTimeString()}</p>`);
+                            res.write(`<p>Sunset: ${sunset.toLocaleTimeString()}</p>`);
+
                             res.send();
-                    })
+                    }) //error handling
                     .catch(earthquakeError => {
                         console.error('Error fetching earthquake data from USGS API:', earthquakeError);
                         res.send('Error fetching earthquake data');
@@ -108,10 +112,12 @@ app.get('/weather', function(req, res) {
 });
 });
 
+//map
 app.get('/map', function (req, res) {
     res.sendFile(__dirname + '/public/map.html');
 });
 
+//start
 app.listen(3000, function () {
     console.log('Server is running on port 3000');
 });
