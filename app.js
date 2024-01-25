@@ -48,29 +48,64 @@ app.get('/weather', function(req, res) {
                     const sunrise = new Date(sunriseSunsetResponse.data.results.sunrise);
                     const sunset = new Date(sunriseSunsetResponse.data.results.sunset);
 
-            res.write(`<p>Temperature in ${city} is ${temp} degrees Celsius.</p>`);
-            res.write(`<p>The weather is currently ${description}.</p>`);
-            res.write(`<p>It feels like ${feelsLike} degrees Celsius.</p>`);
-            res.write(`<p>Coordinates: ${coordinates.lon}, ${coordinates.lat}</p>`);
-            res.write(`<p>Humidity: ${humidity}%</p>`);
-            res.write(`<p>Pressure: ${pressure} hPa</p>`);
-            res.write(`<p>Wind Speed: ${windSpeed} m/s</p>`);
-            res.write(`<p>Country Code: ${countryCode}</p>`);
-            res.write(`<p>Rain Volume: ${rainVolume} mm</p>`);
-            res.write(`<img src=${iconurl} alt="Weather Icon">`);
+                    
+                    const usgsEarthquakeUrl = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson`;
+                    axios.get(usgsEarthquakeUrl)
+                        .then(response => {
+                            const earthquakes = response.data.features;
+                            let daysSinceLastEarthquake = 0;
 
-            res.write(`<a href="/map?lat=${coordinates.lat}&lon=${coordinates.lon}">View Map</a>`);
-            
+                            const relevantEarthquakes = earthquakes.filter(earthquake => {
+                                const latDiff = Math.abs(coordinates.lat - earthquake.geometry.coordinates[1]);
+                                const lonDiff = Math.abs(coordinates.lon - earthquake.geometry.coordinates[0]);
+                    
+                                return earthquake.properties.mag > 3 && latDiff <= 1 && lonDiff <= 1;
+                            });
 
-            res.write(`<p>Sunrise: ${sunrise.toLocaleTimeString()}</p>`);
-            res.write(`<p>Sunset: ${sunset.toLocaleTimeString()}</p>`);
-            res.send();
-        })
-        .catch(error => {
-            console.error('Error fetching data from OpenWeather API:', error);
-            res.send('Error fetching data from OpenWeather API');
-        });
+                            if (relevantEarthquakes.length > 0) {
+                                const mostRecentEarthquake = new Date(relevantEarthquakes[0].properties.time);
+                                const currentDate = new Date();
+                                daysSinceLastEarthquake = Math.floor((currentDate - mostRecentEarthquake) / (1000 * 60 * 60 * 24));
+                            }
+                    
+                            res.write(`<p>Temperature in ${city} is ${temp} degrees Celsius.</p>`);
+                            res.write(`<p>The weather is currently ${description}.</p>`);
+                            res.write(`<p>It feels like ${feelsLike} degrees Celsius.</p>`);
+                            res.write(`<p>Coordinates: ${coordinates.lon}, ${coordinates.lat}</p>`);
+                            res.write(`<p>Humidity: ${humidity}%</p>`);
+                            res.write(`<p>Pressure: ${pressure} hPa</p>`);
+                            res.write(`<p>Wind Speed: ${windSpeed} m/s</p>`);
+                            res.write(`<p>Country Code: ${countryCode}</p>`);
+                            res.write(`<p>Rain Volume: ${rainVolume} mm</p>`);
+                            res.write(`<img src=${iconurl} alt="Weather Icon">`);
+
+                            res.write(`<a href="/map?lat=${coordinates.lat}&lon=${coordinates.lon}">View Map</a>`);
+
+                            res.write(`<p>Sunrise: ${sunrise.toLocaleTimeString()}</p>`);
+                            res.write(`<p>Sunset: ${sunset.toLocaleTimeString()}</p>`);
+
+                            if (daysSinceLastEarthquake > 0) {
+                                res.write(`<p>The last earthquake near ${city} with magnitude over 3 occurred ${daysSinceLastEarthquake} days ago.</p>`);
+                            } else {
+                                res.write(`<p>No earthquakes with magnitude over 3 ${city} in a very long time!</p>`);
+                            }
+
+                            res.send();
+                    })
+                    .catch(earthquakeError => {
+                        console.error('Error fetching earthquake data from USGS API:', earthquakeError);
+                        res.send('Error fetching earthquake data');
+                    })
+            .catch(sunriseSunsetError => {
+                console.error('Error fetching sunrise/sunset data from Sunrise-Sunset API:', sunriseSunsetError);
+                res.send('Error fetching sunrise/sunset data');
+            })
+    })
+    .catch(error => {
+        console.error('Error fetching data from OpenWeather API:', error);
+        res.send('Error fetching data from OpenWeather API');
     });
+});
 });
 
 app.get('/map', function (req, res) {
