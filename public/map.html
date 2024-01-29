@@ -3,21 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles.css">
-    <title>Weather Map</title>
+    <title>Weather App</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input {
+            padding: 5px;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .weather-info {
+            text-align: center;
+        }
+
+        .map-link {
+            margin-top: 20px;
+            display: block;
+        }
+
+        .earthquake-info {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Weather Map</h1>
-    </header>
-    <main>
-        <div id="map" style="height: 400px;"></div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Your Weather App</p>
-    </footer>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="/core.js"></script>
-    <script src="app.js"></script>
+<form action="/weather" method="get">
+    <label for="city">Enter city:</label>
+    <input type="text" id="city" name="city" required>
+    <button type="submit">Get Weather</button>
+</form>
+
+<div class="weather-info">
+    <!-- Weather information will be displayed here -->
+</div>
+
+<a href="/map" class="map-link">View Map</a>
+
+<div class="earthquake-info">
+    <!-- Earthquake information will be displayed here -->
+</div>
 </body>
+<footer>
+    <p>Developed by Arlen | SE-2205</p>
+</footer>
 </html>

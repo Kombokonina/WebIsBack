@@ -10,15 +10,8 @@ app.use(express.static('public'));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-    res.write('<form action="/weather" method="get">');
-    res.write('<label for="city">Enter city:</label>');
-    res.write('<input type="text" id="city" name="city" required>');
-    res.write('<button type="submit">Get Weather</button>');
-    res.write('</form>');
-
-    res.write('<a href="/map">View Map</a>');
-
-    res.send();
+    // Send the modified HTML file
+    res.sendFile(path.join(__dirname, 'public', 'map.html'));
 });
 
 app.get('/weather', function(req, res) {
@@ -70,31 +63,36 @@ app.get('/weather', function(req, res) {
                                 const currentDate = new Date();
                                 daysSinceLastEarthquake = Math.floor((currentDate - mostRecentEarthquake) / (1000 * 60 * 60 * 24));
                             }
-                            
-                            //send response
-                            res.write(`<p>Temperature in ${city} is ${temp} degrees Celsius.</p>`);
-                            res.write(`<p>The weather is currently ${description}.</p>`);
-                            res.write(`<p>It feels like ${feelsLike} degrees Celsius.</p>`);
-                            res.write(`<p>Coordinates: ${coordinates.lon}, ${coordinates.lat}</p>`);
-                            res.write(`<p>Humidity: ${humidity}%</p>`);
-                            res.write(`<p>Pressure: ${pressure} hPa</p>`);
-                            res.write(`<p>Wind Speed: ${windSpeed} m/s</p>`);
-                            res.write(`<p>Country Code: ${countryCode}</p>`);
-                            res.write(`<p>Rain Volume: ${rainVolume} mm</p>`);
-                            res.write(`<img src=${iconurl} alt="Weather Icon">`);
 
-                            res.write(`<a href="/map?lat=${coordinates.lat}&lon=${coordinates.lon}">View Map</a>`);
-
+                            let earthquakeMessage;
                             if (daysSinceLastEarthquake > 0) {
-                                res.write(`<p>The last earthquake near ${city} with magnitude over 3 occurred ${daysSinceLastEarthquake} days ago.</p>`);
+                                earthquakeMessage = `<p>The last earthquake near ${city} with magnitude over 3 occurred ${daysSinceLastEarthquake} days ago.</p>`;
                             } else {
-                                res.write(`<p>No earthquakes with magnitude over 3 ${city} in a very long time!</p>`);
+                                earthquakeMessage = `<p>No earthquakes with magnitude over 3 ${city} in a very long time!</p>`;
                             }
 
-                            res.write(`<p>Sunrise: ${sunrise.toLocaleTimeString()}</p>`);
-                            res.write(`<p>Sunset: ${sunset.toLocaleTimeString()}</p>`);
-
-                            res.send();
+                            //send response
+                            res.send(`
+                                <div class="weather-info">
+                                    <p>Temperature in ${city} is ${temp} degrees Celsius.</p>
+                                    <p>The weather is currently ${description}.</p>
+                                    <p>It feels like ${feelsLike} degrees Celsius.</p>
+                                    <p>Coordinates: ${coordinates.lon}, ${coordinates.lat}
+                                    <p>Humidity: ${humidity}%</p>
+                                    <p>Wind Speed: ${windSpeed} m/s</p>
+                                    <p>Country Code: ${countryCode}</p>
+                                    <p>Rain Volume: ${rainVolume} mm</p>
+                                    <img src=${iconurl} alt="Weather Icon">
+                                </div>
+                                
+                                <a href="/map?lat=${coordinates.lat}&lon=${coordinates.lon}">View Map</a>
+                                
+                                <div class="APIs-info">
+                                    ${earthquakeMessage}
+                                    <p>Sunrise: ${sunrise.toLocaleTimeString()}</p>
+                                    <p>Sunset: ${sunset.toLocaleTimeString()}</p>
+                                </div>
+                            `);
                     }) //error handling
                     .catch(earthquakeError => {
                         console.error('Error fetching earthquake data from USGS API:', earthquakeError);
@@ -114,10 +112,9 @@ app.get('/weather', function(req, res) {
 
 //map
 app.get('/map', function (req, res) {
-    res.sendFile(__dirname + '/public/map.html');
+    res.sendFile(path.join(__dirname, 'public', 'map.html'));
 });
 
-//start
 app.listen(3000, function () {
     console.log('Server is running on port 3000');
 });
