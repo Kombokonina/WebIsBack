@@ -2,6 +2,9 @@ const express = require('express');
 const axios = require('axios');
 const path = require('path');
 const app = express();
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -10,7 +13,7 @@ app.use(express.static('public'));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-    // Send the modified HTML file
+    //html send
     res.sendFile(path.join(__dirname, 'public', 'map.html'));
 });
 
