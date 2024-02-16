@@ -1,21 +1,90 @@
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
-const app = express();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const ejs = require('ejs');
 
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+
+const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const dbUrl = 'mongodb+srv://Kombokonina:kombokonina69@users.oxf09of.mongodb.net/?retryWrites=true&w=majority'
+
+
+mongoose.connect(dbUrl).then(() => {
+    console.info("Connected to the database");
+})  .catch((err) => {
+        console.log("Error: ", err)
+});
+
+const app = express();
+
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('views'));
 
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'views')));
 
-app.get('/', function (req, res) {
-    //html send
-    res.sendFile(path.join(__dirname, 'public', 'map.html'));
+app.use('/', authRoutes);
+app.use('/admin', adminRoutes);
+
+app.get('/', (req, res) => {
+    res.render('register');
 });
+
+/*
+app.get('/', function (req, res) {
+    res.redirect('/login');
+});
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+      const user = await User.findOne({ username });
+      if (!user || !bcrypt.compareSync(password, user.password)) {
+        return res.status(401).send('Invalid username or password');
+      }
+      req.session.user = user;
+      res.redirect('/main');
+    } catch (error) {
+      console.error('Error logging in:', error);
+      res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/admin', (req, res) => {
+    if (!req.session.user || !req.session.user.isAdmin) {
+      return res.status(403).send('Access denied');
+    }
+});  
+
+
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      const user = new User({
+        username,
+        password: hashedPassword,
+        isAdmin: false
+      });
+      await user.save();
+      res.redirect('/login');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+});
+*/
 
 app.get('/weather', function(req, res) {
     const city = req.query.city;
@@ -74,6 +143,24 @@ app.get('/weather', function(req, res) {
                                 earthquakeMessage = `<p>No earthquakes with magnitude over 3 ${city} in a very long time!</p>`;
                             }
 
+                            const weatherInfo = {
+                                temp: temp,
+                                description: description,
+                                feelsLike: feelsLike,
+                                coordinates: coordinates.lon + ', ' + coordinates.lat,
+                                humidity: humidity,
+                                windSpeed: windSpeed,
+                                countryCode: countryCode,
+                                rainVolume: rainVolume,
+                                iconurl: iconurl,
+                                earthquakeMessage: earthquakeMessage,
+                                sunrise: sunrise,
+                                sunset: sunset
+                            };
+
+                            res.render('main', { weatherInfo: weatherInfo });
+
+                            /*
                             //send response
                             res.send(`
                                 <div class="weather-info">
@@ -96,6 +183,8 @@ app.get('/weather', function(req, res) {
                                     <p>Sunset: ${sunset.toLocaleTimeString()}</p>
                                 </div>
                             `);
+                            */
+
                     }) //error handling
                     .catch(earthquakeError => {
                         console.error('Error fetching earthquake data from USGS API:', earthquakeError);
@@ -115,9 +204,9 @@ app.get('/weather', function(req, res) {
 
 //map
 app.get('/map', function (req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'map.html'));
+    res.render('main');
 });
 
 app.listen(3000, function () {
-    console.log('Server is running on port 3000');
+    console.log('Server is running on http://localhost:3000/');
 });
