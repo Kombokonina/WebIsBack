@@ -9,6 +9,7 @@
 </head>
 
 <body>
+
     <div class="container my-4">
         <h1>Admin Panel</h1>
         <div class="mb-3">
@@ -55,7 +56,8 @@
                             </form>
                         </td>
                     </tr>
-                    <!-- Modal for updating the item -->
+
+                    <!-- Modal for updating an existing item -->
                     <div class="modal fade" id="updateItemModal_<%= item._id %>" tabindex="-1" role="dialog"
                         aria-labelledby="updateItemModalLabel_<%= item._id %>" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -66,10 +68,58 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <!-- Include your update item form here -->
-                                <!-- Replace this with your actual update item form -->
+
                                 <div class="modal-body">
-                                    Update item form for <%= item._id %>
+                                    <h2>Update Item</h2>
+                                    <form action="/admin/updateItem/<%= item._id %>" method="POST">
+                                        <div class="form-group">
+                                            <label for="pictures">Pictures (comma-separated URLs like "URL1,URL2"):</label>
+                                            <input type="text" class="form-control" id="pictures" name="pictures" value="<%= item.pictures.join(', ') %>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="names">Names (space-separated in both languages):</label>
+                                            <textarea class="form-control" id="names" name="names" required><% item.names.forEach(name => { %> <%= name.name %> <% }) %></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="descriptions">Descriptions (space-separated in both languages):</label>
+                                            <textarea class="form-control" id="descriptions" name="descriptions" required><% item.descriptions.forEach(description => { %> <%= description.description %> <% }) %></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Update Item</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal for creating a new item -->
+                    <div class="modal fade" id="createItemModal" tabindex="-1" role="dialog" aria-labelledby="createItemModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="createItemModalLabel">Create New Item</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <h2>Add New Item</h2>
+                                    <form action="/addItem" method="POST">
+                                        <div class="form-group">
+                                            <label for="pictures">Pictures (comma-separated URLs like "URL1,URL2"):</label>
+                                            <input type="text" class="form-control" id="pictures" name="pictures" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="names">Names (space-separated in both languages):</label>
+                                            <textarea class="form-control" id="names" name="names" required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="descriptions">Descriptions (space-separated in both languages):</label>
+                                            <textarea class="form-control" id="descriptions" name="descriptions" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Add Item</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -77,26 +127,6 @@
                 <% }) %>
             </tbody>
         </table>
-    </div>
-
-    <!-- Modal for creating a new item -->
-    <div class="modal fade" id="createItemModal" tabindex="-1" role="dialog" aria-labelledby="createItemModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createItemModalLabel">Create New Item</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <!-- Include your create item form here -->
-                <!-- Replace this with your actual create item form -->
-                <div class="modal-body">
-                    Create new item form
-                </div>
-            </div>
-        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

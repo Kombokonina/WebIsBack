@@ -1,4 +1,3 @@
-// adminRoutes.js
 const express = require('express');
 const router = express.Router();
 const Item = require('../models/item');
@@ -21,12 +20,12 @@ router.post('/admin/addItem', isAdmin, async (req, res) => {
     try {
         const { pictures, names, descriptions } = req.body;
         const newItem = new Item({
-            pictures: pictures.split(','), // Split comma-separated URLs into an array
-            names: JSON.parse(names), // Parse JSON string into an array of objects
-            descriptions: JSON.parse(descriptions) // Parse JSON string into an array of objects
+            pictures: pictures.split(','), 
+            names: JSON.parse(names), 
+            descriptions: JSON.parse(descriptions) 
         });
         await newItem.save();
-        res.redirect('/admin'); // Redirect to admin panel after adding item
+        res.redirect('/admin'); 
     } catch (error) {
         console.error('Error adding item:', error);
         res.status(500).send('Internal Server Error');

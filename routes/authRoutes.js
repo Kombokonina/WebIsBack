@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
+const User = require('../models/user');
 const axios = require('axios');
 const Item = require('../models/item');
 
@@ -213,37 +213,41 @@ router.get('/admin', isAdmin, async (req, res) => {
 router.post('/addItem', isAdmin, async (req, res) => {
   try {
       const { pictures, names, descriptions } = req.body;
-      // Parse names and descriptions strings into arrays
+
       const parsedNames = names.split(',').map(name => ({ name }));
       const parsedDescriptions = descriptions.split(',').map(description => ({ description }));
 
       const newItem = new Item({
-          pictures: pictures.split(',').map(url => url.trim()), // Split comma-separated URLs into an array
-          names: parsedNames, // Use parsed names array
-          descriptions: parsedDescriptions // Use parsed descriptions array
+          pictures: pictures.split(',').map(url => url.trim()), 
+          names: parsedNames, 
+          descriptions: parsedDescriptions
       });
 
       await newItem.save();
-      res.redirect('/admin'); // Redirect to admin panel after adding item
+      res.redirect('/admin'); 
   } catch (error) {
       console.error('Error adding item:', error);
-      return res.status(500).send('Error adding item: ' + error.message); // Return detailed error message
+      return res.status(500).send('Error adding item: ' + error.message); 
   }
 });
 
 
 // Route for updating an existing item
-router.post('/updateItem/:itemId', isAdmin, async (req, res) => {
+router.post('/admin/updateItem/:itemId', isAdmin, async (req, res) => {
   try {
       const { itemId } = req.params;
       const { pictures, names, descriptions } = req.body;
+
+      const parsedNames = names.split(',').map(name => ({ name }));
+      const parsedDescriptions = descriptions.split(',').map(description => ({ description }));
+
       const updatedItem = {
-          pictures: pictures.split(','), // Split comma-separated URLs into an array
-          names: JSON.parse(names), // Parse JSON string into an array of objects
-          descriptions: JSON.parse(descriptions) // Parse JSON string into an array of objects
+          pictures: pictures.split(','), 
+          names: parsedNames, 
+          descriptions: parsedDescriptions 
       };
       await Item.findByIdAndUpdate(itemId, updatedItem);
-      res.redirect('/admin'); // Redirect to admin panel after updating item
+      res.redirect('/admin'); 
   } catch (error) {
       console.error('Error updating item:', error);
       res.status(500).send('Internal Server Error');
@@ -251,11 +255,11 @@ router.post('/updateItem/:itemId', isAdmin, async (req, res) => {
 });
 
 // Route for deleting an item
-router.post('/deleteItem/:itemId', isAdmin, async (req, res) => {
+router.post('/admin/deleteItem/:itemId', isAdmin, async (req, res) => {
   try {
       const { itemId } = req.params;
       await Item.findByIdAndDelete(itemId);
-      res.redirect('/admin'); // Redirect to admin panel after deleting item
+      res.redirect('/admin'); 
   } catch (error) {
       console.error('Error deleting item:', error);
       res.status(500).send('Internal Server Error');

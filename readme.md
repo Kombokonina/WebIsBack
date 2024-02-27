@@ -1,56 +1,32 @@
-# Weather App
+# IMPORTANT
+[Render Deploy](https://webisback.onrender.com) if netlify is not working
 
-## Overview
+### Overview
 
-This is a simple weather application that provides weather information, sunrise/sunset times, and days since the last earthquake for a specified city.
-
-## Setup
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) installed on your machine.
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/Kombokonina/WebIsBack.git
-
-2. Navigate to the project directory
-    cd WebIsBack
-
-3. Install dependencies
-    npm install
-
-4. Open app.js
-    Replace OpenWeather Api Key if you have one.
+This is a simple application that is intended to provide joy to users while they are waiting in queue to find a game by acquiring more information about Overwatch 2 characters and/or telling friends some riddles.
 
 ### Usage
 
-1. Start the server
-    node app.js
+1. Go to the link provided in Moodle
 
-2. Go to http:localhost:3000
-    Enter city and click "Get Weather"
+2. If that didn't work, try this [link](https://webisback.onrender.com)
+
+3. Login with admin priveleges by typing username and password as my name on moodle in lowercase
+
+4. When redirected to /weather, click the button "MAIN PAGE (Assignment 4)"
+
+5. On the main page, there will be carousels of items with names and descriptions. You can try going to admin page using button in the header. All CRUD operations should work.
+
+6. Try out the API's!
+
+6.1 For OverFast API, scroll down from carousels and choose a character name, then click "Get Hero Info". 
+
+6.2 For Riddles API, just click "Get a Riddle"
 
 ### APIs Used
 
-OpenWeatherMap API: General weather.
-Sunrise-Sunset API: Sunrise and sunset times.
-USGS Earthquake API: Earthquake data.
-
-### Design desicions
-
-Project Structure: Uses Express.js for the server and static HTML files.
-
-Weather API: Utilizes OpenWeatherMap for temperature, description, etc.
-
-Sunrise/Sunset API: Uses the Sunrise-Sunset API for accurate times.
-
-Earthquake API: Queries the USGS Earthquake API for earthquakes with magnitude over 3 near the specified city.
-
-UI/UX: Simple interface with a form for city input and links for additional information.
-
+1. REST API: Admin page
+2. OverFast API: Character data
+3. Riddles API: Riddles data
 
 ### Thank you 

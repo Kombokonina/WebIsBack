@@ -12,14 +12,15 @@ const { get } = require('http');
 const dbUrl = 'mongodb+srv://Kombokonina:kombokonina69@users.oxf09of.mongodb.net/?retryWrites=true&w=majority'
 
 
-mongoose.connect(dbUrl).then(() => {
-    console.info("Connected to the database");
-})  .catch((err) => {
+mongoose.connect(dbUrl)
+    .then(() => {
+        console.info("Connected to the database");
+    })  
+    .catch((err) => {
         console.log("Error: ", err)
-});
+    });
 
 const app = express();
-const router = express.Router();
 
 app.use(session({
     secret: 'your_secret_key',
@@ -44,15 +45,11 @@ app.get('/', (req, res) => {
     res.render('register');
 });
 
-/*
-router.get('/', (req, res) => {
-    res.render('register');
-});
-*/
+const PORT = process.env.PORT || 3000;
 
-app.use('/.netlify/functions/app', router);
+app.listen(PORT, function () {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+module.exports = app;
 module.exports.handler = serverless(app);
-
-app.listen(3000, function () {
-    console.log('Server is running on http://localhost:3000/');
-});
