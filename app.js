@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const serverless = require('serverless-http');
 
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -7,6 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const { get } = require('http');
 const dbUrl = 'mongodb+srv://Kombokonina:kombokonina69@users.oxf09of.mongodb.net/?retryWrites=true&w=majority'
 
 
@@ -17,6 +19,7 @@ mongoose.connect(dbUrl).then(() => {
 });
 
 const app = express();
+const router = express.Router();
 
 app.use(session({
     secret: 'your_secret_key',
@@ -40,6 +43,14 @@ app.get('/', (req, res) => {
     res.render('register');
 });
 
+router.get('/', (req, res) => {
+    res.render('register');
+});
+
+app.use('/.netlify/functions/app', router);
+
 app.listen(3000, function () {
     console.log('Server is running on http://localhost:3000/');
 });
+
+module.exports.handler = serverless(app);
