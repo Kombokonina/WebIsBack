@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .weather-info, .earthquake-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="weather-info">
+    <p id="city"></p>
+    <p id="temp"></p>
+    <p id="description"></p>
+    <p id="feelsLike"></p>
+    <p id="coordinates"></p>
+    <p id="humidity"></p>
+    <p id="windSpeed"></p>
+    <p id="countryCode"></p>
+    <p id="rainVolume"></p>
+    <img id="iconurl" alt="Weather Icon">
+</div>
+
+<div class="earthquake-info">
+    <p id="earthquakeMessage"></p>
+    <p id="sunrise"></p>
+    <p id="sunset"></p>
+</div>
+
+<button id="mapButton" class="map-link">View Map</button>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="/core.js"></script>
+<script src="app.js"></script>
+<script>
+    // Retrieve elements
+    const cityElem = document.getElementById('city');
+    const tempElem = document.getElementById('temp');
+    const descriptionElem = document.getElementById('description');
+    const feelsLikeElem = document.getElementById('feelsLike');
+    const coordinatesElem = document.getElementById('coordinates');
+    const humidityElem = document.getElementById('humidity');
+    const windSpeedElem = document.getElementById('windSpeed');
+    const countryCodeElem = document.getElementById('countryCode');
+    const rainVolumeElem = document.getElementById('rainVolume');
+    const iconurlElem = document.getElementById('iconurl');
+
+    const earthquakeMessageElem = document.getElementById('earthquakeMessage');
+    const sunriseElem = document.getElementById('sunrise');
+    const sunsetElem = document.getElementById('sunset');
+
+    // Set content
+    cityElem.textContent = 'Temperature in ' + city.textContent + ' is ' + temp.textContent + ' degrees Celsius.';
+    descriptionElem.textContent = 'The weather is currently ' + description.textContent + '.';
+    feelsLikeElem.textContent = 'It feels like ' + feelsLike.textContent + ' degrees Celsius.';
+    coordinatesElem.textContent = 'Coordinates: ' + coordinates.textContent;
+    humidityElem.textContent = 'Humidity: ' + humidity.textContent + '%';
+    windSpeedElem.textContent = 'Wind Speed: ' + windSpeed.textContent + ' m/s';
+    countryCodeElem.textContent = 'Country Code: ' + countryCode.textContent;
+    rainVolumeElem.textContent = 'Rain Volume: ' + rainVolume.textContent + ' mm';
+    iconurlElem.src = iconurl.getAttribute('src');
+
+    earthquakeMessageElem.textContent = earthquakeMessage.textContent;
+    sunriseElem.textContent = 'Sunrise: ' + sunrise.textContent;
+    sunsetElem.textContent = 'Sunset: ' + sunset.textContent;
+
+    // Set map button
+    const mapButton = document.getElementById('mapButton');
+    mapButton.addEventListener('click', function() {
+        window.location.href = '/map?lat=' + coordinates.textContent + '&lon=' + coordinates.textContent;
+    });
+</script>
+</body>
+</html>

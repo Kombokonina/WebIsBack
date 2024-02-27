@@ -1,13 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
-  <h2>Welcome to the Admin Panel</h2>
-  <!-- Add admin functionalities here -->
+    <div class="container my-4">
+        <h1>Admin Panel</h1>
+        <div class="mb-3">
+            <!-- Button to trigger modal for creating a new item -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createItemModal">
+                Create New Item
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Pictures</th>
+                    <th scope="col">Names</th>
+                    <th scope="col">Descriptions</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% items.forEach(item => { %>
+                    <tr>
+                        <td><%= item._id %></td>
+                        <td>
+                            <% item.pictures.forEach(picture => { %>
+                                <img src="<%= picture %>" class="img-thumbnail" alt="Item Picture">
+                            <% }) %>
+                        </td>
+                        <td>
+                            <% item.names.forEach(name => { %>
+                                <p><%= name.name %></p>
+                            <% }) %>
+                        </td>
+                        <td>
+                            <% item.descriptions.forEach(description => { %>
+                                <p><%= description.description %></p>
+                            <% }) %>
+                        </td>
+                        <td>
+                            <!-- Button to trigger modal for updating the item -->
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                data-target="#updateItemModal_<%= item._id %>">Edit</button>
+                            <form action="/admin/deleteItem/<%= item._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <!-- Modal for updating the item -->
+                    <div class="modal fade" id="updateItemModal_<%= item._id %>" tabindex="-1" role="dialog"
+                        aria-labelledby="updateItemModalLabel_<%= item._id %>" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateItemModalLabel_<%= item._id %>">Update Item</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <!-- Include your update item form here -->
+                                <!-- Replace this with your actual update item form -->
+                                <div class="modal-body">
+                                    Update item form for <%= item._id %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for creating a new item -->
+    <div class="modal fade" id="createItemModal" tabindex="-1" role="dialog" aria-labelledby="createItemModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createItemModalLabel">Create New Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- Include your create item form here -->
+                <!-- Replace this with your actual create item form -->
+                <div class="modal-body">
+                    Create new item form
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

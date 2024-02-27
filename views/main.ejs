@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>City Form</title>
     <style>
         body {
             background-color: #f4f4f4;
@@ -46,25 +46,34 @@
             margin-top: 20px;
         }
     </style>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<form action="/weather" method="get">
-    <label for="city">Enter city:</label>
-    <input type="text" id="city" name="city" required>
-    <button type="submit">Get Weather</button>
-</form>
+    <form action="/weatherInfo" method="get"> <!-- Change method to "get" -->
+        <label for="city">Enter city:</label>
+        <input type="text" id="city" name="city" required>
+        <button type="submit">Get Weather</button>
+    </form>    
 
-<div class="weather-info">
-    <!-- Weather information will be displayed here -->
-    <!-- EJS syntax for dynamic content can be added here -->
-</div>
+    <div class="weather-info">
+        <!-- Weather information will be displayed here -->
+        <!-- EJS syntax for dynamic content can be added here -->
+    </div>
 
-<a href="/map" class="map-link">View Map</a>
+    <!--  <a href="/map" class="map-link">View Map</a>  -->
 
-<div class="earthquake-info">
-    <!-- Earthquake information will be displayed here -->
-    <!-- EJS syntax for dynamic content can be added here -->
-</div>
+    <div class="earthquake-info">
+        <!-- Earthquake information will be displayed here -->
+        <!-- EJS syntax for dynamic content can be added here -->
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="/core.js"></script>
+    <script src="app.js"></script>
+    
+    <form action="/main" method="get">
+        <button type="submit">MAIN PAGE (Assignment 4)</button>
+    </form>
 </body>
 <footer>
     <p>Developed by Arlen | SE_2205</p>
