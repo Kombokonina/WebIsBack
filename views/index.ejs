@@ -47,8 +47,127 @@
         <% }) %>
     </main>
 
+    <main class="container">
+        <!-- Character selection section -->
+        <div class="row mt-4">
+            <div class="col-md-6 offset-md-3">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="characterSelect">Select Character</label>
+                    </div>
+                    <select class="custom-select" id="characterSelect">
+                        <option selected disabled>Choose...</option>
+                        <option value="zenyatta">Zenyatta</option>
+                        <option value="reinhardt">Reinhardt</option>
+                        <option value="tracer">Tracer</option>
+                        <option value="winston">Winston</option>
+                        <option value="zarya">Zarya</option>
+                        <option value="ana">Ana</option>
+                        <option value="bastion">Bastion</option>
+                        <option value="brigitte">Brigitte</option>
+                        <option value="doomfist">Doomfist</option>
+                        <option value="genji">Genji</option>
+                        <option value="hanzo">Hanzo</option>
+                        <option value="junkrat">Junkrat</option>
+                        <option value="lucio">Lucio</option>
+                        <option value="cassidy">Cassidy</option>
+                        <option value="mei">Mei</option>
+                        <option value="mercy">Mercy</option>
+                        <option value="moira">Moira</option>
+                        <option value="orisa">Orisa</option>
+                        <option value="pharah">Pharah</option>
+                        <option value="reaper">Reaper</option>
+                        <option value="roadhog">Roadhog</option>
+                        <option value="soldier-76">Soldier: 76</option>
+                        <option value="sombra">Sombra</option>
+                        <option value="symmetra">Symmetra</option>
+                        <option value="torbjorn">Torbjorn</option>
+                        <option value="widowmaker">Widowmaker</option>
+                        <option value="wreckingball">Wrecking Ball</option>
+                        <option value="ashe">Ashe</option>
+                        <option value="baptiste">Baptiste</option>
+                        <option value="echo">Echo</option>
+                        <option value="sigma">Sigma</option>
+                        <option value="illari">Illari</option>
+                        <option value="junker-queen">Junker Queen</option>
+                        <option value="mauga">Mauga</option>
+                        <option value="kiriko">Kiriko</option>
+                        <option value="ramattra">Ramattra</option>
+                        <option value="lifeweaver">Lifeweaver</option>
+                        <option value="sojourn">Sojourn</option>
+                        <option value="dva">D.va</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get Hero Info button -->
+        <div class="row mt-2">
+            <div class="col-md-6 offset-md-3">
+                <button id="getHeroInfoBtn" class="btn btn-primary">Get Hero Info</button>
+            </div>
+        </div>
+
+        <!-- Character information section -->
+        <div id="characterInfo" class="row mt-4">
+            <div class="col-md-6 offset-md-3">
+                <!-- Information will be dynamically populated here -->
+            </div>
+        </div>
+    </main>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Function to fetch character information and update the UI
+        function fetchCharacterInfo(character) {
+            fetch(`https://overfast-api.tekrop.fr/heroes/${character}?locale=en-us`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the UI with character information
+                    const characterInfoContainer = document.getElementById('characterInfo');
+                    characterInfoContainer.innerHTML = `
+                        <div class="col-md-12">
+                            <h2>${data.name}</h2>
+                            <img src="${data.portrait}" alt="${data.name}" class="img-fluid mb-3">
+                            <p><strong>Description:</strong> ${data.description}</p>
+                            <p><strong>Role:</strong> ${data.role}</p>
+                            <p><strong>Location:</strong> ${data.location}</p>
+                            <p><strong>Hitpoints:</strong></p>
+                            <ul>
+                                <li>Shields: ${data.hitpoints.shields}</li>
+                                <li>Health: ${data.hitpoints.health}</li>
+                                <li>Armor: ${data.hitpoints.armor}</li>
+                                <li>Total: ${data.hitpoints.total}</li>
+                            </ul>
+                            <h3>Abilities:</h3>
+                            <ul>
+                                ${data.abilities.map(ability => `<li><strong>${ability.name}:</strong> ${ability.description}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                })
+                .catch(error => console.error('Error fetching character information:', error));
+        }
+
+        // Event listener for when a character is selected
+        document.getElementById('characterSelect').addEventListener('change', function () {
+            const selectedCharacter = this.value;
+            if (selectedCharacter !== 'Choose...') {
+                fetchCharacterInfo(selectedCharacter);
+            }
+        });
+
+        // Event listener for Get Hero Info button click
+        document.getElementById('getHeroInfoBtn').addEventListener('click', function () {
+            const selectedCharacter = document.getElementById('characterSelect').value;
+            if (selectedCharacter !== 'Choose...') {
+                fetchCharacterInfo(selectedCharacter);
+            }
+        });
+    </script>
+
 </body>
 </html>
