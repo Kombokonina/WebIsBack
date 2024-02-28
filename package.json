@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/netlify-lambda serve src",
-    "build": "./node_modules/.bin/netlify-lambda build src"
+    "build": "netlify deploy --prod"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "express-session": "^1.18.0",
     "leaflet": "^1.9.4",
     "mongoose": "^8.1.2",
+    "netlify-cli": "^17.17.1",
     "netlify-lambda": "^2.0.16",
     "serverless-http": "^3.2.0"
   }

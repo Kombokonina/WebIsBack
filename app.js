@@ -48,9 +48,8 @@ router.get('/', (req, res) => {
 });
 
 app.use('/.netlify/functions/app', router);
+module.exports.handler = serverless(app);
 
 app.listen(3000, function () {
     console.log('Server is running on http://localhost:3000/');
 });
-
-module.exports.handler = serverless(app);
