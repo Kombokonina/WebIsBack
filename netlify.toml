@@ -1,9 +1,7 @@
 [build]
     functions = "functions"
 
-/*
 [[redirects]]
 from = "/*"
 to = "/register.ejs"
 status = 200
-*/
