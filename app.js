@@ -39,10 +39,11 @@ app.use('/static', express.static(path.join(__dirname, 'views')));
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 
+/*
 app.get('/', (req, res) => {
     res.render('register');
 });
-
+*/
 
 router.get('/', (req, res) => {
     res.render('register');
