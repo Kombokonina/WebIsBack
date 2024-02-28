@@ -3,5 +3,5 @@
 
 [[redirects]]
 from = "/*"
-to = "/register"
+to = "/register.html"
 status = 200
