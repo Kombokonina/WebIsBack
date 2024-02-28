@@ -43,11 +43,11 @@ app.get('/', (req, res) => {
     res.render('register');
 });
 
-/*
+
 router.get('/', (req, res) => {
     res.render('register');
 });
-*/
+
 
 app.use('/.netlify/functions/app', router);
 module.exports.handler = serverless(app);
