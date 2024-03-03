@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">BMI Calculator</a>
+        <a class="btn btn-secondary mr-2" href="/weather">Back</a>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Calculate Your BMI</h1>
+
+        <form id="bmiForm" action="/bmicalculator" method="POST">
+            <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" class="form-control" id="weight" name="weight" required>
+            </div>
+            <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" class="form-control" id="height" name="height" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" class="form-control" id="age" name="age" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="form-control" id="gender" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="unit">Unit</label>
+                <select class="form-control" id="unit" name="unit" required>
+                    <option value="metric">Metric (kg/cm)</option>
+                    <option value="imperial">Imperial (lbs/in)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Calculate BMI</button>
+        </form>
+
+        <% if (typeof bmiResult !== 'undefined') { %>
+            <div class="mt-4">
+                <h2>Your BMI: <%= bmiResult.bmi.toFixed(2) %></h2>
+                <p><%= bmiResult.interpretation %></p>
+            </div>
+        <% } %>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('bmiForm').addEventListener('submit', function (event) {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const age = parseInt(document.getElementById('age').value);
+            const unit = document.getElementById('unit').value;
+
+            if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+                alert('Please enter valid numeric values for weight, height, and age.');
+                event.preventDefault();
+                return;
+            }
+
+            if (weight <= 0 || height <= 0 || age <= 0) {
+                alert('Please enter positive values for weight, height, and age.');
+                event.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

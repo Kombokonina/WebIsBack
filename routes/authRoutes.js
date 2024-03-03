@@ -132,33 +132,6 @@ router.post('/weather', function(req, res) {
                           };
                           
                           res.render('weatherInfo', { weatherdata: weatherdata });
-                          
-                          
-
-                          /*
-                          //send response
-                          res.send(`
-                              <div class="weather-info">
-                                  <p>Temperature in ${city} is ${temp} degrees Celsius.</p>
-                                  <p>The weather is currently ${description}.</p>
-                                  <p>It feels like ${feelsLike} degrees Celsius.</p>
-                                  <p>Coordinates: ${coordinates.lon}, ${coordinates.lat}
-                                  <p>Humidity: ${humidity}%</p>
-                                  <p>Wind Speed: ${windSpeed} m/s</p>
-                                  <p>Country Code: ${countryCode}</p>
-                                  <p>Rain Volume: ${rainVolume} mm</p>
-                                  <img src=${iconurl} alt="Weather Icon">
-                              </div>
-                              
-                              <a href="/map?lat=${coordinates.lat}&lon=${coordinates.lon}">View Map</a>
-                              
-                              <div class="APIs-info">
-                                  ${earthquakeMessage}
-                                  <p>Sunrise: ${sunrise.toLocaleTimeString()}</p>
-                                  <p>Sunset: ${sunset.toLocaleTimeString()}</p>
-                              </div>
-                          `);
-                          */
 
                   }) //error handling
                   .catch(earthquakeError => {
@@ -177,7 +150,6 @@ router.post('/weather', function(req, res) {
 });
 });
 
-//map
 router.get('/map', function (req, res) {
   res.render('main');
 });
@@ -190,6 +162,43 @@ router.get('/main', async (req, res) => {
       console.error('Error fetching items:', error);
       res.status(500).send('Internal Server Error');
   }
+});
+
+router.get('/bmiCheck', (req, res) => {
+  res.render('bmiCheck');
+});
+
+function calculateBMI(weight, height, age, gender, unit) {
+  if (unit === 'imperial') {
+      weight *= 0.453592;
+      height *= 2.54; 
+  }
+
+  const bmi = weight / Math.pow(height / 100, 2);
+
+  let interpretation;
+  if (bmi < 18.5) {
+      interpretation = 'Underweight';
+  } else if (bmi < 24.9) {
+      interpretation = 'Normal weight';
+  } else if (bmi < 29.9) {
+      interpretation = 'Overweight';
+  } else {
+      interpretation = 'Obese';
+  }
+
+  return { bmi, interpretation };
+}
+
+router.post('/bmicalculator', (req, res) => {
+  const { weight, height, age, gender, unit } = req.body;
+  const bmiResult = calculateBMI(weight, height, age, gender, unit);
+
+  res.render('bmiCheck', { bmiResult });
+});
+
+router.get('/bonus', (req, res) => {
+  res.render('bonus');
 });
 
 const isAdmin = (req, res, next) => {
